@@ -4,11 +4,6 @@
 using namespace std;
 
 const int MAX_SIZE = 10;
-template<typename T>
-class Graph 
-{
-    
-}
 
 template <typename T>
 class adjList
