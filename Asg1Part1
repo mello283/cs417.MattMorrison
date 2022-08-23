@@ -163,7 +163,7 @@ int main()
     adjList<int> list;
     adjMatrix<int> matrix;
     
-    /*for(int i=0;i<MAX_SIZE;i++)
+    for(int i=0;i<MAX_SIZE;i++)
     {
         list.addNode(i);
     }
@@ -185,7 +185,7 @@ int main()
     list.adjacent(2,1);
     list.deleteEdge(0,1);
     list.deleteNode(2);
-    list.printGraph();*/
+    list.printGraph();
     matrix.addEdge(0,4);
     matrix.addEdge(0,3);
     matrix.addNode(0);
