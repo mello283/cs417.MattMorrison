@@ -58,7 +58,7 @@ class adjList
             }
             else
             {
-                cout<<"Could not find edge for deletion"; 
+                cout<<"Could not find edge for deletion";
             }
         }
         void deleteNode(T node)
@@ -103,19 +103,17 @@ class adjMatrix
         }
         void addNode(T x)
         {
+            int xCoord = x;
             grid[xCoord][xCoord]=1;
         }
         vector<T> neighbors(T x)
         {
             vector<T> possibleNeighbors;
-            for(int pos=0;pos<currentSize-1;pos++)
+            for(int pos=0;pos<currentSize;pos++)
             {
-                if(grid[x][pos]==1&&x!=pos)
+                if(adjacent(x,pos))
                 {
-                    if(grid[pos][x]==1)
-                    {
-                        possibleNeighbors.push_back(pos);
-                    }
+                    possibleNeighbors.push_back(pos);
                 }
             }
             return possibleNeighbors;
@@ -174,17 +172,25 @@ int main()
     list.deleteEdge(0,1);
     list.deleteNode(2);
     list.printGraph();
+    
     matrix.addEdge(0,4);
     matrix.addEdge(0,3);
     //matrix.deleteNode(0);
     matrix.addNode(0);
-    vector<int> a = matrix.neighbors(0);
     if(matrix.adjacent(0,4))
         cout<<"true";
     else
         cout<<"false";
     cout<<endl;
     matrix.printGraph();
+    
+    vector<int> nei = matrix.neighbors(0);
+    vector<int>::iterator nIt = nei.begin();
+    for(auto x : nei)
+    {
+        cout<<*nIt;
+        advance(nIt,1);
+    }
     return 0;
 }
 
