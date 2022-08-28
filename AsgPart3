@@ -1,0 +1,197 @@
+#include <bits/stdc++.h>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+const int MAX_SIZE = 10;
+
+template <typename T>
+class adjList
+{
+    public:
+        vector<int> adj[MAX_SIZE];
+        void addEdge(T u, T v)
+        {
+            adj[u].push_back(v);
+        }
+        void printGraph()
+        {
+            for (T v = 0; v < MAX_SIZE; ++v) {
+                cout << "\n Adjacency list of vertex " << v
+                     << "\n head ";
+                for (auto x : adj[v])
+                {
+                    cout << "-> " << x;
+                }
+                cout<<endl;
+            }
+        }
+        void addNode(T x)
+        {
+            adj[x].push_back(x);
+        }
+        vector<T> neighbors(T x)
+        {   
+            vector<T>neighborhood;
+            for(auto y : adj[x])
+            {
+                neighborhood.push_back(y);
+            }
+            return neighborhood;
+        }
+        bool adjacent(T x,T y)
+        {
+            if(count(adj[x].begin(), adj[x].end(), y)) //source: https://www.techiedelight.com/check-vector-contains-given-element-cpp/
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        void deleteEdge(T source, T dest)
+        {
+            if(count(adj[source].begin(),adj[source].end(),dest))
+            {
+                adj[source].erase(adj[source].begin() + dest);//source: https://www.geeksforgeeks.org/add-and-remove-edge-in-adjacency-list-representation-of-a-graph/
+            }
+            else
+            {
+                cout<<"Could not find edge for deletion";
+            }
+        }
+        void deleteNode(T node)
+        {
+            adj[node].clear();
+        }
+};
+template <typename T>
+class adjMatrix
+{
+    public:
+        int currentSize=5;
+        T grid[MAX_SIZE][MAX_SIZE];
+        adjMatrix()
+        {
+            for(int y=0;y<currentSize;y++)
+            {
+                for(int x=0;x<currentSize;x++)
+                {
+                    grid[x][y]=0;
+                    if(x==y)
+                    {
+                        grid[x][y]=1;
+                    }
+                }
+            }
+        }
+        void addEdge(T u, T v)
+        {
+            grid[u][v]=1;
+        }
+        void printGraph()
+        {
+            for(int y=0;y<currentSize;y++)
+            {
+                for(int x=0;x<currentSize;x++)
+                {
+                    cout<<grid[x][y]<<" ";
+                }
+                cout<<endl;
+            }
+        }
+        void addNode(T x)
+        {
+            int xCoord = x;
+            grid[xCoord][xCoord]=1;
+        }
+        vector<T> neighbors(T x)
+        {
+            vector<T> possibleNeighbors;
+            for(int pos=0;pos<currentSize;pos++)
+            {
+                if(adjacent(x,pos))
+                {
+                    possibleNeighbors.push_back(pos);
+                }
+            }
+            return possibleNeighbors;
+        }
+        bool adjacent(T x,T y)
+        {
+            bool adjacentTo=false;
+            if(grid[x][y]==1)
+            {
+                adjacentTo = true;
+            }
+            return adjacentTo;
+            
+        }
+        void deleteEdge(T source, T dest)
+        {
+            grid[source][dest]=0;
+        }
+        void deleteNode(T node)
+        {
+            for(int i=0;i<currentSize;i++)
+            {
+                grid[node][i]=0;
+                grid[i][node]=0;
+            }
+        }
+};
+
+
+int main()
+{
+    adjList<int> list;
+    adjMatrix<int> matrix;
+    
+    for(int i=0;i<MAX_SIZE;i++)
+    {
+        list.addNode(i);
+        matrix.addNode(i);
+    }
+    
+    list.addEdge(0,1);
+    list.addEdge(0,2);
+    list.addEdge(0,5);
+    list.addEdge(2,1);
+    list.printGraph();
+
+    //just to show that the neighbor method works
+    vector<int>neighborVect = list.neighbors(0);
+    vector<int>::iterator pos = neighborVect.begin();
+    for(auto x : neighborVect)
+    {
+        cout<<*pos;
+        advance(pos,1);
+    }
+    list.adjacent(2,1);
+    list.deleteEdge(0,1);
+    list.deleteNode(2);
+    list.printGraph();
+    
+    matrix.addEdge(0,4);
+    matrix.addEdge(0,3);
+    //matrix.deleteNode(0);
+    matrix.addNode(0);
+    if(matrix.adjacent(0,4))
+        cout<<"true";
+    else
+        cout<<"false";
+    cout<<endl;
+    matrix.printGraph();
+    
+    vector<int> nei = matrix.neighbors(0);
+    vector<int>::iterator nIt = nei.begin();
+    for(auto x : nei)
+    {
+        cout<<*nIt;
+        advance(nIt,1);
+    }
+    return 0;
+}
+
+//Starting code found at https://www.geeksforgeeks.org/graph-and-its-representations/
