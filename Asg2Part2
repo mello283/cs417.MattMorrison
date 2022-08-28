@@ -191,6 +191,7 @@ int main()
     matrix.addEdge(0,3);
     matrix.addNode(0);
     vector<int> a = matrix.neighbors(0);
+    cout<<endl<<a[0]<<" "<<a[1]<<endl;
     if(matrix.adjacent(0,4))
         cout<<"true";
     else
@@ -202,4 +203,3 @@ int main()
 }
 
 //Starting code found at https://www.geeksforgeeks.org/graph-and-its-representations/
-Footer
