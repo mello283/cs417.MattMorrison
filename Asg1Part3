@@ -150,17 +150,23 @@ class adjMatrix
             vector<int>::iterator cIt = cycles.begin();
             vector<int>::iterator cIt2 = std::next(cIt,1);
             vector<bool> visited;
-            for(int items=0;items<cycles.size();items++)
+            for(auto x : cycles)
             {
-                if((adjacent(*cIt,*cIt2)||*cIt==*cIt2)
+                if(adjacent(*cIt,*cIt2)||cIt==cycles.begin())
                 {
                     visited.push_back(true);
-                    cout<<cIt<<" "<<cIt2<<" "
+                    cout<<*cIt<<" "<<*cIt2<<" true"<<endl;
+                    advance(cIt,1);
+                    advance(cIt2,1);
                 }
                 else
                 {
-                    visited.push_back(false);                    
+                    visited.push_back(false);           
+                    cout<<*cIt<<" "<<*cIt2<<" false"<<endl;
+                    advance(cIt,1);
+                    advance(cIt2,1);
                 }
+
             }
             
         }
@@ -199,6 +205,9 @@ int main()
     
     matrix.addEdge(0,4);
     matrix.addEdge(0,3);
+    matrix.addEdge(3,4);
+    matrix.addEdge(3,0);
+    matrix.addEdge(4,0);
     //matrix.deleteNode(0);
     matrix.addNode(0);
     if(matrix.adjacent(0,4))
@@ -221,7 +230,8 @@ int main()
     cyc.push_back(3);
     cyc.push_back(2);
     cyc.push_back(0);
-    matrix.isCycle(nei);
+    cout<<endl;
+    matrix.isCycle(cyc);
     return 0;
 }
 
