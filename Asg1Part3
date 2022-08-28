@@ -152,13 +152,14 @@ class adjMatrix
             vector<bool> visited;
             for(int items=0;items<cycles.size();items++)
             {
-                if((adjacent(*cIt,*cIt2))
+                if((adjacent(*cIt,*cIt2)||*cIt==*cIt2)
                 {
-                    
+                    visited.push_back(true);
+                    cout<<cIt<<" "<<cIt2<<" "
                 }
                 else
                 {
-                    
+                    visited.push_back(false);                    
                 }
             }
             
