@@ -116,6 +116,7 @@ class adjMatrix : public Graph<T>
         }
         void addNode(T x)
         {
+            int xCoord = x;
             grid[xCoord][xCoord]=1;
         }
         vector<T> neighbors(T x)
