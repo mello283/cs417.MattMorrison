@@ -269,7 +269,7 @@ int main()
     int path = 0;
     do
     {
-        cout<<"\nEnter your path using 0-9\n";
+        cout<<"\nEnter your path using 0-9\nType a number less than 0 and hit enter to continue\n";
         cin>>path;
         if(path>-1)
         {
