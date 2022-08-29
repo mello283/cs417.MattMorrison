@@ -235,49 +235,52 @@ int main()
     list.addEdge(0,2);
     list.addEdge(0,5);
     list.addEdge(2,1);
-    list.printGraph();
 
     //just to show that the neighbor method works
     vector<int>neighborVect = list.neighbors(0);
     vector<int>::iterator pos = neighborVect.begin();
     for(auto x : neighborVect)
     {
-        cout<<*pos;
         advance(pos,1);
     }
     list.adjacent(2,1);
     list.deleteEdge(0,1);
     list.deleteNode(2);
-    list.printGraph();
     
     matrix.addEdge(0,4);
     matrix.addEdge(0,3);
     matrix.addEdge(3,4);
+    matrix.addEdge(4,3);
     matrix.addEdge(3,0);
     matrix.addEdge(4,0);
     //matrix.deleteNode(0);
     matrix.addNode(0);
-    if(matrix.adjacent(0,4))
-        cout<<"true";
-    else
-        cout<<"false";
-    cout<<endl;
-    matrix.printGraph();
-    
     vector<int> nei = matrix.neighbors(0);
     vector<int>::iterator nIt = nei.begin();
     for(auto x : nei)
     {
-        cout<<*nIt;
         advance(nIt,1);
     }
     vector<int> lNei = list.neighbors(0);
     
-    //testing cycle code
     vector<int> cyc;
-    cyc.push_back(0);
+    
+    //user input for path
+    int path = 0;
+    do
+    {
+        cout<<"\nEnter your path using 0-9\n";
+        cin>>path;
+        if(path>-1)
+        {
+            cyc.push_back(path);
+        }
+    }while(path>-1);
+    
 
+    
     cout<<"\nCycle test\n\n";
+    cout<<"\nMatrix\n";
     if(matrix.isCycle(cyc))
     {
         cout<<"\n There is a cycle\n";
@@ -287,7 +290,8 @@ int main()
         cout<<"\n There is not a cycle\n";
     }
     cout<<endl;
-    if(list.isCycle(lNei))
+    cout<<"\nList\n";
+    if(list.isCycle(cyc))
     {
         cout<<"\n There is a cycle\n";
     }
