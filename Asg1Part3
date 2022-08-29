@@ -67,9 +67,11 @@ class adjList
         }
         bool isCycle(vector<int> cycles)
         {
+            //look at the path given 
             vector<int>::iterator cIt = cycles.begin();
             vector<int>::iterator cIt2 = std::next(cIt,1);
             vector<bool> visited;
+            vector<bool>::iterator visitIt = visited.begin();
             for(auto x : cycles)
             {
                 if(adjacent(*cIt,*cIt2)||cIt==cycles.begin())
@@ -89,7 +91,19 @@ class adjList
 
             }
             
+            //if all paths are true it means theres a connected cycle
+            bool finalCycCheck = true;
+            for(auto x : visited)
+            {
+                if(x == false)
+                {
+                    finalCycCheck = false;
+                }
+                advance(visitIt,1);
+            }
+            return finalCycCheck;
         }
+            
 };
 template <typename T>
 class adjMatrix
@@ -167,9 +181,11 @@ class adjMatrix
         }
         bool isCycle(vector<int> cycles)
         {
+            //look at the path given 
             vector<int>::iterator cIt = cycles.begin();
             vector<int>::iterator cIt2 = std::next(cIt,1);
             vector<bool> visited;
+            vector<bool>::iterator visitIt = visited.begin();
             for(auto x : cycles)
             {
                 if(adjacent(*cIt,*cIt2)||cIt==cycles.begin())
@@ -189,6 +205,17 @@ class adjMatrix
 
             }
             
+            //if all paths are true it means theres a connected cycle
+            bool finalCycCheck = true;
+            for(auto x : visited)
+            {
+                if(x == false)
+                {
+                    finalCycCheck = false;
+                }
+                advance(visitIt,1);
+            }
+            return finalCycCheck;
         }
 };
 
@@ -249,13 +276,25 @@ int main()
     //testing cycle code
     vector<int> cyc;
     cyc.push_back(0);
-    cyc.push_back(3);
-    cyc.push_back(2);
-    cyc.push_back(0);
+
+    cout<<"\nCycle test\n\n";
+    if(matrix.isCycle(cyc))
+    {
+        cout<<"\n There is a cycle\n";
+    }
+    else
+    {
+        cout<<"\n There is not a cycle\n";
+    }
     cout<<endl;
-    matrix.isCycle(cyc);
-    cout<<endl;
-    list.isCycle(lNei);
+    if(list.isCycle(lNei))
+    {
+        cout<<"\n There is a cycle\n";
+    }
+    else
+    {
+        cout<<"\n There is not a cycle\n";
+    }
     return 0;
 }
 
