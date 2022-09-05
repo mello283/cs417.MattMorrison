@@ -1,3 +1,5 @@
+//after creating the adj list and matrix, combine them under a virtual class 
+
 #include <bits/stdc++.h>
 #include <vector>
 #include <algorithm>
