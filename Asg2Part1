@@ -1,3 +1,5 @@
+//wrapper class for the list container in STL
+
 #include <iostream>
 #include <iterator>
 #include <list>
