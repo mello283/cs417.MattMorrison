@@ -1,0 +1,195 @@
+//create a binary tree using smart pointers
+#include <iostream>
+#include <algorithm>
+#include <queue>
+#include <fstream>
+#include <memory>
+#include <chrono>
+#include <random>
+
+int getRand(int,int);
+int getRand(int a=1,int b=6)
+{
+        std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> distrib(a, b);
+    return distrib(gen);
+}
+template<typename T> class TreeNode{
+
+public:
+    TreeNode(){}
+    TreeNode(int key, T data):Data(data), Key(key){}
+    ~TreeNode(){}
+
+    TreeNode* Parent;
+    std::shared_ptr<TreeNode> Left, Right;
+    T Data;
+    int Key;
+};
+
+template<typename T>
+class BinarySearchTree{
+public:
+    BinarySearchTree(){}
+    ~BinarySearchTree(){}
+
+    /*! Returns a raw pointer to the Root node. */
+    TreeNode<T>* GetRoot() const{
+        return mRoot.get();
+    }
+
+    void SetRoot(const TreeNode<T>& newRoot){
+        mRoot = std::make_unique<TreeNode<T>>(newRoot);
+    }
+    void SetRoot(std::unique_ptr<TreeNode<T>>& newRoot){
+        mRoot = std::move(newRoot);
+    }
+
+    /*! Inorder Traversal of the tree, prints each node's data. */
+    void InorderTreeWalk(TreeNode<T>* treeNode = nullptr);
+
+    /*! Inserts a Node in the Tree. */
+    void TreeInsert(TreeNode<T>& treeNode);
+
+    /*!
+     *  Search for a Node in the Tree.
+     *  \returns nullptr if key was not found.
+     */
+    TreeNode<T>* TreeSearch(int key);
+
+    /*! Returns the left-most TreeNode from the start point */
+    TreeNode<T>* Minimum(TreeNode<T>* startPoint){
+        while(startPoint->Left.get()){
+            startPoint = startPoint->Left.get();
+        }
+        return startPoint;
+    }
+
+    /*! Returns the successor of any given TreeNode in the Tree */
+    TreeNode<T>* TreeSuccessor(const TreeNode<T>& treeNode);
+
+    /*! Substitute the tree rooted at originalNode with the one rooted at newNode */
+    void Transplant(TreeNode<T>* originalNode, TreeNode<T>* newNode);
+
+    /*! Delete a node from the tree */
+    void TreeDelete(TreeNode<T>* treeNode);
+
+private:
+    bool tree_search(TreeNode<T>* currentTreeNode, int key, TreeNode<T>& result = nullptr);
+    std::unique_ptr<TreeNode<T>> mRoot;
+    std::vector<TreeNode<T>> mInOrder;
+};
+
+template<typename T>
+void BinarySearchTree<T>::InorderTreeWalk(TreeNode<T>* treeNode){
+    if(treeNode == nullptr)
+        treeNode = mRoot.get();
+    else if(treeNode != nullptr){
+        InorderTreeWalk(treeNode->Left.get());
+        std::cout << treeNode->Key<<std::endl;
+        InorderTreeWalk(treeNode->Right.get());
+    }
+}
+
+template<typename T>
+void BinarySearchTree<T>::TreeInsert(TreeNode<T>& treeNode){
+    // First element in the tree.
+    if(GetRoot() == nullptr)
+        SetRoot(treeNode);
+    else{
+        TreeNode<T>* y = nullptr;
+        auto x = GetRoot();
+        while( x != nullptr ){
+            y = x;
+            if(treeNode.Key < x->Key)
+                x = x->Left.get();
+            else x = x->Right.get();
+        }
+        treeNode.Parent = y;
+        if(treeNode.Key < y->Key)
+            y->Left = std::make_shared<TreeNode<T>>(treeNode);
+        else y->Right= std::make_shared<TreeNode<T>>(treeNode);
+    }
+}
+
+template<typename T>
+TreeNode<T>* BinarySearchTree<T>::TreeSearch(int key){
+    auto result = std::make_shared<TreeNode<T>>();
+    if(tree_search(GetRoot(), key, *result.get()))
+        return result.get();
+    return nullptr;
+}
+
+template<typename T>
+bool BinarySearchTree<T>::tree_search(TreeNode<T>* currentTreeNode, int key, TreeNode<T>& result){
+    while(currentTreeNode && key != currentTreeNode->Key){
+        if(key < currentTreeNode->Key)
+            currentTreeNode = currentTreeNode->Left.get();
+        else currentTreeNode = currentTreeNode->Right.get();
+    }
+    if(currentTreeNode != nullptr){
+        result = *currentTreeNode;
+        return true;
+    }
+    return false;
+}
+
+template<typename T>
+TreeNode<T>* BinarySearchTree<T>::TreeSuccessor(const TreeNode<T>& treeNode){
+    if(treeNode.Right)
+        return Minimum(treeNode.Right.get());
+    auto auxNode = treeNode.Parent;
+    auto auxNode2 = std::make_shared<TreeNode<T>>(treeNode);
+    while(auxNode && auxNode2 == auxNode->Right){
+        auxNode2.reset(auxNode);
+        auxNode = auxNode->Parent;
+    }
+    return auxNode;
+}
+
+template<typename T>
+void BinarySearchTree<T>::Transplant(TreeNode<T>* originalNode, TreeNode<T>* newNode){
+    if(!originalNode->Parent)
+        SetRoot(*newNode);
+    else if(originalNode == originalNode->Parent->Left.get())
+        originalNode->Parent->Left.reset(newNode);
+    else originalNode->Parent->Right.reset(newNode);
+    if(newNode)
+        newNode->Parent = originalNode->Parent;
+            
+}
+
+int main()
+{
+std::string aStr = "";
+int keyNum=0;
+
+
+BinarySearchTree<int> BSTree;
+//  Insert
+for(int num=0;num<1000;num++)
+{
+    TreeNode<int> nodeSet(num,getRand(0,1000));
+    BSTree.TreeInsert(nodeSet);
+}
+
+//  Print
+for(int asdf=0;asdf<100;asdf++)
+{
+    std::cout<<BSTree.TreeSearch(getRand(1,1000))->Data<<"\t";
+}
+
+    return 0;
+}
+//source link https://www.reddit.com/r/Cplusplus/comments/4uenta/binary_search_trees_with_smart_pointers/
