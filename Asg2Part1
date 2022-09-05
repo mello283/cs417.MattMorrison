@@ -1,0 +1,54 @@
+#include <iostream>
+#include <iterator>
+#include <list>
+
+template<typename T>
+class listWrapper
+{
+    public:
+        std::list<T>daList;
+        std::list<T>::iterator it = daList.begin();
+        listWrapper()
+        {
+            for (int i=1; i<=100; ++i) 
+            {
+                daList.push_back(i); 
+            }
+        }
+        void find(T searchfor)
+        {
+            it = daList.begin();
+            T tmp;
+            for(auto x : daList)
+            {
+                advance(it,1);
+                if(*it==searchfor)
+                {
+                    tmp = *it;
+                    break;
+                }
+            }
+            daList.erase(it);
+            daList.push_front(tmp);
+        }
+        void printList()
+        {
+            it = daList.begin();
+            for(auto x : daList)
+            {
+                std::cout<<*it<<"\t";
+                advance(it,1);
+            }
+        }
+    
+};
+
+int main()
+{
+    listWrapper<int> intList;
+    intList.find(99);
+    intList.find(12);
+    intList.printList();
+    
+    return 0;
+}
