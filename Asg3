@@ -1,0 +1,57 @@
+//worst airline ever code
+//handles 3 queues and priority details with the queue container
+#include <iostream>
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <list>
+#include <queue>
+#include <random>
+#include <chrono>
+
+int getRand(int,int);
+int getRand(int a=1,int b=6)
+{
+        std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> distrib(a, b);
+    return distrib(gen);
+}
+
+int main()
+{
+    
+    float averageLen = 0.0;
+    float averageLineTime = 0.0;
+    float averageServTime = 0.0;//needs to be for each queue
+    /*
+        arrive econ 1-3
+        arrive business 1-15
+        arrive first 1-30
+    
+        service 5-10
+        service 6-12
+        service 5-20
+    */
+    
+    int max = 0;
+    int timer = 0;
+    
+    queue<int>firstClass;
+    queue<int>businessClass;
+    queue<int>economyClass;
+       
+    
+    
+    return 0;
+}
