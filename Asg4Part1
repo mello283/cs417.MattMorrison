@@ -1,0 +1,352 @@
+//Almost worst airline ever simulator
+#include <iostream>
+#include <algorithm>
+#include <utility>
+#include <string>
+#include <vector>
+#include <list>
+#include <queue>
+#include <stack>
+#include <random>
+#include <chrono>
+
+int getRand(int,int);
+int getRand(int a=1,int b=6)
+{
+        std::random_device rd;
+    std::mt19937::result_type seed = rd() ^ (
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+                ).count() +
+            (std::mt19937::result_type)
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                std::chrono::high_resolution_clock::now().time_since_epoch()
+                ).count() );
+
+    std::mt19937 gen(seed);
+    std::uniform_int_distribution<unsigned> distrib(a, b);
+    return distrib(gen);
+}
+
+class serviceDesk
+{
+    private:
+        bool firstBusy = false;
+        bool businessBusy = false;
+        bool economyBusy = false;
+    public:
+        void setFirst()
+        {
+            firstBusy = !firstBusy;
+        }
+        void setBusiness()
+        {
+            businessBusy = !businessBusy;
+        }
+        void setEconomy()
+        {
+            economyBusy = !economyBusy;
+        }
+        bool getFirst()
+        {
+            return firstBusy;
+        }
+        bool getBusiness()
+        {
+            return businessBusy;
+        }
+        bool getEconomy()
+        {
+            return economyBusy;
+        }
+};
+serviceDesk sd;
+
+int main()
+{
+    //lines of people 
+    std::queue<int>firstLine;
+    std::queue<int>businessLine;
+    std::queue<int>economyLine;
+    
+    //processed people
+    std::stack<int> fData;
+    std::stack<int> bData;
+    std::stack<int> eData;
+    
+    int populate = 0;
+    unsigned int eDecay = 0;
+    unsigned int bDecay = 0;
+    unsigned int fDecay = 0;
+
+    //average time spent on servicing
+    unsigned int eSerTime = 0;
+    unsigned int bSerTime = 0;
+    unsigned int fSerTime = 0;
+    
+    //average line size
+    unsigned int eAvgSize = 0;
+    unsigned int bAvgSize = 0;
+    unsigned int fAvgSize = 0;
+    
+    //max line size
+    unsigned int eMax = 0;
+    unsigned int bMax = 0;
+    unsigned int fMax = 0;
+    
+    
+    for(int timer=0;timer<720;timer++)
+    {
+        //check if the rep is finished
+        if(eDecay>0)
+        {
+            eDecay--;
+            if(eDecay==0)
+            {
+                sd.setEconomy();
+            }
+        }
+        if(bDecay>0)
+        {
+            bDecay--;
+            if(bDecay==0)
+            {
+                sd.setBusiness();
+            }
+        }
+        if(fDecay>0)
+        {
+            fDecay--;
+            if(fDecay==0)
+            {
+                sd.setFirst();
+            }
+        }
+        
+        
+        
+        
+        //--if else chain for economy--
+        
+        //if economy not helping and has a customer
+        if(sd.getEconomy()==false&&economyLine.size()>0)
+        {
+            eData.push(economyLine.front());
+            economyLine.pop();
+            sd.setEconomy();
+            //once desk has a customer, set a rnd time decay according to the customer being helped
+            eDecay = getRand(5,10);
+                eSerTime += eDecay;
+                if(eSerTime!=0)
+                {
+                    eSerTime /=2;
+                }
+        }
+        
+        
+        
+        
+        //if economy is caught up and not helping yet
+        else if(sd.getEconomy()==false&&economyLine.size()==0)
+        {
+            if(sd.getFirst()==true&&firstLine.size()>0)
+            {
+                fData.push(firstLine.front());
+                firstLine.pop();
+                sd.setEconomy();
+                //set decay according to the customer being helped
+                eDecay = getRand(5,20);
+                eSerTime += eDecay;
+                if(eSerTime!=0)
+                {
+                    eSerTime /=2;
+                }
+            }
+            else if(sd.getBusiness()==true&&businessLine.size()>0)
+            {
+                bData.push(businessLine.front());
+                businessLine.pop();
+                sd.setEconomy();
+                //set according to the customer being helped
+                eDecay = getRand(6,12);
+                eSerTime += eDecay;
+                if(eSerTime!=0)
+                {
+                    eSerTime /=2;
+                }
+            }
+            else
+            {
+                
+            }
+        }
+        
+        
+        
+        
+        //--if else chain for business--
+        
+        if(sd.getBusiness()==false&&businessLine.size()>0)
+        {
+            bData.push(businessLine.front());
+            businessLine.pop();
+            sd.setBusiness();
+            //once desk has a customer, set a rnd time decay according to the customer being helped
+            bDecay = getRand(6,12);
+            bSerTime += bDecay;
+            if(bSerTime!=0)
+            {
+                bSerTime /=2;
+            }
+        }
+        
+        //if business is caught up and not helping yet
+        else if(sd.getBusiness()==false&&businessLine.size()==0)
+        {
+            if(sd.getFirst()==true&&firstLine.size()>0)
+            {
+                fData.push(firstLine.front());
+                firstLine.pop();
+                sd.setBusiness();
+                //set decay according to the customer being helped
+                bDecay = getRand(5,20);
+                bSerTime += bDecay;
+                if(bSerTime!=0)
+                {
+                    bSerTime /=2;
+                }
+            }
+            else if(sd.getEconomy()==true&&economyLine.size()>0)
+            {
+                eData.push(economyLine.front());
+                economyLine.pop();
+                sd.setBusiness();
+                //set according to the customer being helped
+                bDecay = getRand(5,10);
+                bSerTime += bDecay;
+                if(bSerTime!=0)
+                {
+                    bSerTime /=2;
+                }
+            }
+            else
+            {
+                
+            }
+        }
+
+
+
+
+        //--if else chain for first line--
+        
+        if(sd.getFirst()==false&&firstLine.size()>0)
+        {
+            fData.push(firstLine.front());
+            firstLine.pop();
+            sd.setFirst();
+            //once desk has a customer, set a rnd time decay according to the customer being helped
+            fDecay = getRand(5,20);
+            fSerTime += fDecay;
+            if(fSerTime!=0)
+            {
+                fSerTime /=2;
+            }
+        }
+        
+        //if first is caught up and not helping yet
+        else if(sd.getFirst()==false&&firstLine.size()==0)
+        {
+            if(sd.getBusiness()==true&&businessLine.size()>0)
+            {
+                bData.push(businessLine.front());
+                businessLine.pop();
+                sd.setFirst();
+                //set decay according to the customer being helped
+                fDecay = getRand(6,12);
+                fSerTime += fDecay;
+                if(fSerTime!=0)
+                {
+                    fSerTime /=2;
+                }
+            }
+            else if(sd.getEconomy()==true&&economyLine.size()>0)
+            {
+                eData.push(economyLine.front());
+                economyLine.pop();
+                sd.setFirst();
+                //set according to the customer being helped
+                fDecay = getRand(5,10);
+                fSerTime += fDecay;
+                if(fSerTime!=0)
+                {
+                    fSerTime /=2;
+                }
+            }
+            else
+            {
+                
+            }
+        }
+
+        
+        //update all lines
+        if(getRand(1,3)==2)
+        {
+            economyLine.push(timer);
+        }
+        if(getRand(1,15)==2)
+        {
+            businessLine.push(timer);
+        }
+        if(getRand(1,30)==2)
+        {
+            firstLine.push(timer);
+        }
+        
+        //track max size
+        if(firstLine.size()>fMax)
+        {
+            fMax = firstLine.size();
+        }
+        if(businessLine.size()>bMax)
+        {
+            bMax = businessLine.size();
+        }
+        if(economyLine.size()>eMax)
+        {
+            eMax = economyLine.size();
+        }
+        
+    }
+    std::cout<<"Average time to wait "<<fData.top()/fData.size()<<std::endl;
+    std::cout<<"Average time to wait "<<bData.top()/bData.size()<<std::endl;
+    std::cout<<"Average time to wait "<<eData.top()/eData.size()<<std::endl;
+    std::cin.ignore();
+    
+    std::cout<<"Average service time first line "<<fSerTime<<std::endl;
+    std::cout<<"Average service time business line "<<bSerTime<<std::endl;
+    std::cout<<"Average service time economy line "<<eSerTime<<std::endl;
+    std::cin.ignore();
+
+    
+    for(int i=0;(!eData.empty());i++)
+    {
+        int temp = eData.top();
+        eData.pop();
+        if(eData.top()-temp>fMax)
+        {
+            eMax = eData.top()-temp;
+        }
+        eData.pop();
+    }
+    
+    for(int i=0;(!eData.empty());i++)
+    {
+        std::cout<<"eData: "<<eData.top()<<std::endl;
+        eData.pop();
+    }
+    std::cout<<eMax<<std::endl;
+    return 0;
+}
