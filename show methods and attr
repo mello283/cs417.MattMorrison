@@ -1,0 +1,12 @@
+#program 4
+#matt morrison
+# list methods from an object
+class daClass:
+    x=58
+    y=34
+def main():
+    li = daClass()
+    print(dir(li))
+
+if __name__ == '__main__':
+    main()
