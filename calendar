@@ -1,0 +1,13 @@
+#program 2 print a calender for given month
+#matt morrison
+#helper code found at tutorialspoint.com/print-a-calendar-in-python
+import calendar
+def main():
+    print("type the year")
+    year = input()
+    print("type the month")
+    month = input()
+    print(calendar.month(int(year),int(month)))
+
+if __name__ == '__main__':
+    main()
