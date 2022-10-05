@@ -1,0 +1,15 @@
+#Program 1 word frequency counter
+#Matt Morrison
+#helper code found at programminghistorian.org/en/lessons/counting-frequencies
+def main():
+    x = input()
+    x = x.split()
+    freq = []
+    for i in x:
+        freq.append(x.count(i))
+    print("words: " + str(x) + "\n")
+    print("freqs: " + str(freq) + "\n")
+    print("Pairs\n" + str(list(zip(x,freq))))
+if __name__ == '__main__':
+    main()
+
