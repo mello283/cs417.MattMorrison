@@ -1,0 +1,24 @@
+import random as r
+
+def frequencyTable(dnaList):
+    n = max([len(dna) for dna in dnaList])
+    frequency_matrix = {
+        'A': [0]*n,
+        'C': [0]*n,
+        'G': [0]*n,
+        'T': [0]*n
+        }
+    for dna in dnaList:
+        for index,base in enumerate(dna):
+            frequency_matrix[base][index] += 1
+    return frequency_matrix
+    
+def main():
+    dna = "ACGT"
+    dnaList = ""
+    for i in range(1000):
+        dnaList = dnaList + (r.choice(dna))
+
+    print(frequencyTable(dnaList))
+if __name__ == "__main__":
+    main()
