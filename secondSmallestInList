@@ -1,0 +1,21 @@
+def secondSmallest(theList):
+    sortedList = theList.copy()
+    sortedList.sort()
+    secSmall = sortedList[1]
+    position = 9999
+    length = len(theList)
+    i=0
+    while i < length:
+        if theList[i] == secSmall:
+            position = i
+            if theList[i+1] == secSmall:
+                position = i+1
+                i=9999
+        print(theList[i])
+        i = i+1
+    print("\n",position)
+def main():
+    listy = [1,5,4,8,9,2,10,56,87,2,11,45,65,23]
+    secondSmallest(listy)
+if __name__ == "__main__":
+    main()
